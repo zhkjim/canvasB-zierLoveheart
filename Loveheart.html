@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+        }
+
+        .container {
+            width: 100%;
+            height: 100%;
+        }
+
+        canvas {
+            background: #fff;
+        }
+        #gb{
+            position: absolute;
+            top:500px;
+            left:500px;
+            height: 100px;
+            width: 500px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+    </style>
+
+</head>
+<body>
+<div class="container">
+    <canvas id="Canvas" width="600" height="600"></canvas>
+    <div id="w" style="display:none">Hello World!!
+    asdasd
+    asdasdasdasdasd
+    qwe</div>
+    <div id="gb"></div>
+</div>
+<
+</body>
+<script src="https://cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script>
+<script type="text/javascript">
+    var str = "kjghkgkjghkhkj\nhkj";
+    var stop = false;
+    var c = document.getElementById('Canvas');
+    var context = c.getContext('2d');
+    var t = 0;
+    var fps = 0;
+    var p0 = {x: 300, y: 350};
+    var p1 = {x: 120, y: 260};
+    var p2 = {x: 130, y: 10};
+    var p3 = {x: 300, y: 140};
+    var count = 0;
+    var cursor='';
+
+    function flash() {
+        var i=0;
+        var word=str;
+        function type(){
+            document.getElementById("gb").innerText = word.substring(0,i++)+cursor;
+        }
+        setInterval(type,300)
+    }
+
+
+    function cursorDisappear()
+    {
+        cursor='';
+        count++;
+        if(count>500)
+            return 0;
+        setTimeout(cursorAppear, 300);
+    }
+
+    function cursorAppear()
+    {
+        cursor='|';
+        count++;
+        if(count>500)
+            return 0;
+        setTimeout(cursorDisappear, 300);
+    }
+
+    function draw() {
+
+
+        var g0 = {x: p0.x + (p1.x - p0.x) * t, y: p0.y + (p1.y - p0.y) * t};
+        var g1 = {x: p1.x + (p2.x - p1.x) * t, y: p1.y + (p2.y - p1.y) * t};
+        var g2 = {x: p2.x + (p3.x - p2.x) * t, y: p2.y + (p3.y - p2.y) * t};
+        var b0 = {x: g0.x + (g1.x - g0.x) * t, y: g0.y + (g1.y - g0.y) * t};
+        var b1 = {x: g1.x + (g2.x - g1.x) * t, y: g1.y + (g2.y - g1.y) * t};
+        var P = {x: b0.x + (b1.x - b0.x) * t, y: b0.y + (b1.y - b0.y) * t};
+        if (parseInt(P.x) == 300 && parseInt(P.y) == 140) {
+            p0.x = 300;
+            p0.y = 140;
+            p1.x = 470;
+            p1.y = 10;
+            p2.x = 480;
+            p2.y = 260;
+            p3.x = 300;
+            p3.y = 350;
+            t = 0;
+        }
+        if (P.x >= 299 && P.x <= 301 && P.y >= 349 && P.y <= 351 && p0.y == 140)
+        {
+            stop = true;
+        }
+        fps += 1;
+        if (fps == 2) {
+            var img = new Image();
+            var xx = parseInt(Math.random() * 3 + 1);
+            img.src = "floral" + xx + ".png";
+            context.drawImage(img, P.x, P.y, 20, 20);
+            fps = 0;
+        }
+
+        if (t < 1) {
+            t += .01;
+        }
+    }
+    function reflash() {
+        draw();
+        if (stop == false) requestAnimationFrame(reflash);
+    }
+    setTimeout(reflash,3000);
+    cursorDisappear();
+    flash();
+
+</script>
+</html>
